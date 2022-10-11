@@ -23,7 +23,9 @@ export const userSignup= (req, res) => {
                   )
                   user.save()
                       .then(user => {
-                          res.json({ message: "register successfully" })
+                          const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET)
+                          const userDetail ={...user,...user.password=undefined}
+                          res.json({ message: "register successfully",token,user:userDetail._doc })
                       }).catch((err) => {
                           console.log(err)
                       })
@@ -41,7 +43,7 @@ export const userLogin = async (req, res) => {
 }
   const user = await User.findOne({ email });
   if (!user) {
-    return res.status(400).send({ message: "User not found" });
+    return res.status(422).send({ error: "email not register" });
   }
   bycrypt.compare(password, user.password)
   .then(doMatch => {
@@ -50,7 +52,7 @@ export const userLogin = async (req, res) => {
           const userDetail ={...user,...user.password=undefined}
           res.json({ message: "Successfull Login", token, user:userDetail._doc})
       } else {
-          return res.status(422).json({ error: 'invalid email or password' })
+          return res.status(422).json({ error: 'invalid password' })
       }
   })
 }
