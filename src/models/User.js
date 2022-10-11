@@ -6,12 +6,12 @@ const UserSchema = new Schema({
         type: String,
         required: true,
         enum:'user'
-
-
-    },
+        },
+    surName:{
+            type:String,
+        },
     name:{
         type:String,
-        required:true
     },
     email: {
         type: String,
@@ -20,6 +20,39 @@ const UserSchema = new Schema({
     password: {
         type: String,
         required: true
+    },
+    websiteName:{
+        type:String,
+    },
+    colour:{
+        type:String
+    },
+    language:{
+        type:String,
+    },
+    pic:{
+        type:String
+    },
+    mainfocus:{
+        type:String
+    },
+    supportNo:{
+        type:String
+    },
+    industryType:{
+        type:String
+    },
+    noInquiries:{
+        type:String
+    },
+    firstChatbot:{
+        type:String
+    },
+    codeSnippet:{
+        type:String
+    },
+    todoThat:{
+        type:String
     },
     resetToken: String,
     expireToken: Date,
