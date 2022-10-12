@@ -15,11 +15,10 @@ const UserSchema = new Schema({
     },
     email: {
         type: String,
-        required: true
     },
     password: {
         type: String,
-        required: true
+        
     },
     websiteName:{
         type:String,
@@ -52,6 +51,15 @@ const UserSchema = new Schema({
         type:String
     },
     todoThat:{
+        type:String
+    },
+    imageUrl:{
+        type:String
+    },
+    socailLoginUserId:{
+        type:String
+    },
+    loginStatus:{
         type:String
     },
     resetToken: String,
