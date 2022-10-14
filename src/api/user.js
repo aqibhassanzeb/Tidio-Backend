@@ -1,8 +1,23 @@
 import { User } from '../models/User.js'
 import jwt from "jsonwebtoken";
 import bycrypt from "bcryptjs"
+import crypto from "crypto"
+import nodemailer from "nodemailer"
 
 
+
+
+
+
+
+const transporter = nodemailer.createTransport({service:"gmail",auth:{user:"workspatron@gmail.com",pass:"mhoumpxfstzptawc"},from:"workspatron@gmail.com"})
+transporter.verify((err, succ) => {
+    if (err) {
+      console.log(err);
+    } else if (succ) {
+      console.log("Mail Service Connected");
+    }
+  });
 
 
 export const userSignup= (req, res) => {
@@ -60,7 +75,6 @@ if (!user) {
 
   export const userSocialLogin= (req, res) => {
       let status="user"
-   const {email}= req.body
    User.findOne({ email: email })
     
         .then((saveUser) => {
@@ -88,3 +102,66 @@ if (!user) {
         })
   
   }
+
+
+//   forgot password 
+
+export const forgotPass= (req, res) => {
+    crypto.randomBytes(32, (err, buffer) => {
+        if (err) {
+            console.log(err)
+        }
+        const token = buffer.toString("hex")
+        User.findOne({ email: req.body.email })
+            .then(user => {
+                if (!user) {
+                    return res.status(422).json({ error: "applicant do not exist with this email" })
+                }
+                user.resetToken = token
+                user.expireToken = Date.now() + 3600000
+                user.save().then((result) => 
+                {
+                    transporter.sendMail({
+                        to: user.email,
+                        from: "no-reply-www.brianspk.com",
+                        subject: "password reset",
+                        html: `
+                        <h1>Tidio-Chat</h1>
+                    <p>You requested for password reset</p>
+                    <h5>click in this <a href="${process.env.LINK}reset-pass/${token}">link</a> to reset password</h5>
+                    `
+                    })
+                    res.json({ message: "check your email" })
+                })
+
+            })
+    })
+}
+
+        // new password 
+
+export const newPass=(req, res) => {
+    const d = new Date();
+let time = d.getTime();
+    console.log("req :",req.body,time,"full date :",d,"time :",d.toLocaleTimeString())
+            const newPassword = req.body.password
+            const sentToken = req.body.token
+            User.findOne({ resetToken: sentToken, expireToken: { $gt: Date.now() } })
+        
+                .then(user => {
+                    console.log("user :",user)
+                    if (!user) {
+                        return res.status(422).json({ error: "Try again session expired" })
+                    }
+                    bycrypt.hash(newPassword, 12).then(hashedpassword => {
+                        user.password = hashedpassword
+                        user.resetToken = undefined
+                        user.expireToken = undefined
+                        user.save().then((saveduser) => {
+                            res.json({ message: "password updated success" })
+                        })
+                    })
+                }).catch(err => {
+                    console.log(err)
+                })
+        }
