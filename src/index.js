@@ -37,8 +37,7 @@ app.use('/api/v1',userAuth,adminAuth)
 
 app.use('*', (req, res) => {
     return res.status(404).json({
-        success: false,
-        message: 'API endpoint doesnt exist please put Api routes..'
+        message: 'Backend is runing..'
     })
 });
 
