@@ -9,6 +9,7 @@ import bodyParser from 'body-parser';
 import './config.js';
 import  adminAuth  from "./routes/admin-routes.js";
 import  userAuth  from './routes/user-routes.js';
+import  chatRoutes  from './routes/chat-routes.js';
 
 
 const app = express();
@@ -32,7 +33,7 @@ app.use(cors({
 //user forgot and reset-password Endpoints
 // app.use('/api/v1/reset-password',passwordreset)
 //All APi's Endponits
-app.use('/api/v1',userAuth,adminAuth)
+app.use('/api/v1',userAuth,adminAuth,chatRoutes)
 
 
 app.use('*', (req, res) => {

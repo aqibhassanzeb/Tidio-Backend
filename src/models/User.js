@@ -54,7 +54,10 @@ const UserSchema = new Schema({
         type:String
     },
     imageUrl:{
-        type:String
+        type: String,
+      required: true,
+      default:
+        "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
     socailLoginUserId:{
         type:String
@@ -64,7 +67,9 @@ const UserSchema = new Schema({
     },
     resetToken: String,
     expireToken: Date,
-})
+},
+{ timestaps: true }
+)
 
 
 
