@@ -24,7 +24,6 @@ export const allUsers = async (req, res) => {
     //   return
 
     if (!userId) {
-      console.log("UserId param not sent with request");
       return res.sendStatus(400);
     }
   
@@ -40,7 +39,7 @@ export const allUsers = async (req, res) => {
   
     isChat = await User.populate(isChat, {
       path: "latestMessage.sender",
-      select: "name pic email",
+      select: "name imageUrl email",
     });
   
     if (isChat.length > 0) {
@@ -77,7 +76,7 @@ export const allUsers = async (req, res) => {
         .then(async (results) => {
           results = await User.populate(results, {
             path: "latestMessage.sender",
-            select: "name pic email",
+            select: "name imageUrl email",
           });
           res.status(200).send(results);
         });
