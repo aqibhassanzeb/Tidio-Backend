@@ -55,7 +55,7 @@ const port = process.env.PORT || 3333;
 const io = new Server(nodeServer, {
     pingTimeout: 60000,
     cors: {
-      origin: process.env.LOCAL_LINK,
+      origin: process.env.LINK,
       // credentials: true,
     },
   });
@@ -88,6 +88,7 @@ const io = new Server(nodeServer, {
         
         chat.users.forEach((user) => {
             if (user._id == newMessageRecieved.sender._id) return;
+            // console.log(newMessageRecieved);
           socket.in(user._id).emit("message recieved", newMessageRecieved);
         });
       });
