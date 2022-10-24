@@ -50,6 +50,7 @@ const port = process.env.PORT || 3333;
     console.log(`Server is running on port: ${port}`);
 });
 
+// console.log("sdfskjdflasjlk",process.env.LOCAL_LINK);
 
 // socket.io portion 
 const io = new Server(nodeServer, {
@@ -66,7 +67,6 @@ const io = new Server(nodeServer, {
     console.log("Connected to socket.io");
     socket.on("setup",(userData)=>{
         socket.join(userData._id)
-        console.log(userData._id)
         socket.emit("connected")
     })
 
@@ -88,8 +88,7 @@ const io = new Server(nodeServer, {
         
         chat.users.forEach((user) => {
             if (user._id == newMessageRecieved.sender._id) return;
-            // console.log(newMessageRecieved);
-          socket.in(user._id).emit("message recieved", newMessageRecieved);
+          socket.in(user._id).emit("messagerecieved", newMessageRecieved);
         });
       });
 
