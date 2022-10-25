@@ -50,7 +50,7 @@ const port = process.env.PORT || 3333;
     console.log(`Server is running on port: ${port}`);
 });
 
-// console.log("sdfskjdflasjlk",process.env.LOCAL_LINK);
+// console.log("sdfskjdflasjlk",process.env.LINK);
 
 // socket.io portion 
 const io = new Server(nodeServer, {
