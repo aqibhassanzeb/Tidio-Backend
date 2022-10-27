@@ -1,4 +1,5 @@
 import { User } from '../models/User.js'
+import { subUser } from '../models/subUser.js'
 import jwt from "jsonwebtoken";
 import bycrypt from "bcryptjs"
 import crypto from "crypto"
@@ -75,7 +76,7 @@ if (!user) {
 
   export const userSocialLogin= (req, res) => {
       let status="user"
-   User.findOne({ email: email })
+   subUser.findOne({ email: email })
     
         .then((saveUser) => {
             if (saveUser) {
@@ -165,3 +166,32 @@ let time = d.getTime();
                     console.log(err)
                 })
         }
+
+    
+     
+        // sub user portion 
+
+    
+export const subUserCreate= (req, res) => {
+ const {name,createdby}= req.body
+ if(!name){
+    return res.status(422).json({message:"name is required"})
+ }
+ subUser.find( {$and: [{  name: name }, { createdby:createdby}]})
+  
+      .then((saveUser) => {
+          if (saveUser.length >0) {
+              return res.status(422).json({ message: 'already registered' })
+          }
+              const user = new subUser(req.body)
+                  user.save()
+                      .then(user => {
+                          res.json({ message: "created successfully",user})
+                      }).catch((err) => {
+                          console.log(err)
+                      })
+      }).catch((err) => {
+          console.log(err)
+      })
+
+}
