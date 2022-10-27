@@ -3,12 +3,9 @@ import newChat from "../../models/subUserchatModal.js";
   
   
   export const accessChat2 = async (req, res) => {
-      const { embededLink,_id,createdby } = req.body;
-    //   return
-    if (!embededLink) {
-      return res.sendStatus(400);
-    }
-    var isChat = await newChat.find({
+      const { _id,createdby } = req.body;
+    
+      var isChat = await newChat.find({
         $and: [
             { subUser: { $eq: _id } },
             { Admin: { $eq: createdby }  },

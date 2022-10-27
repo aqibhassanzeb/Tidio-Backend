@@ -11,6 +11,7 @@ import {userSignup,
     subUserDelete,
     
 } from "../api/user.js"
+import { protect } from "../middleware/user-middleware.js";
 
 routes.post('/user', userSignup )
 
@@ -18,8 +19,8 @@ routes.post('/userlogin', userLogin )
 routes.post('/socailLogin', userSocialLogin )
 routes.post('/reset-password', forgotPass )
 routes.post('/new-password', newPass )
-routes.post('/newusercreated', subUserCreate )
-routes.get('/subuserfetch/:_id', subUserfetch)
+routes.post('/newusercreate',protect, subUserCreate )
+routes.get('/subuserfetch/:_id',protect, subUserfetch)
 routes.delete('/subuserdelete/:_id', subUserDelete)
 
 

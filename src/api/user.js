@@ -196,6 +196,8 @@ export const subUserCreate= (req, res) => {
 
 }
 
+// fetch subuser api
+ 
 export const subUserfetch= (req, res) => {
  if(!req.params._id){
     return res.status(422).json({message:"id required"})
@@ -210,6 +212,9 @@ export const subUserfetch= (req, res) => {
       })
 
 }
+
+// delete subuser api
+
 export const subUserDelete= (req, res) => {
  if(!req.params._id){
     return res.status(422).json({message:"id required"})

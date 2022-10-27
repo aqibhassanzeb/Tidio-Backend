@@ -65,7 +65,6 @@ const UserSchema = new Schema({
     loginStatus:{
         type:String
     },
-    subUser:[{ type: mongoose.Schema.Types.ObjectId, ref: "subUser" }],
     resetToken: String,
     expireToken: Date,
 },

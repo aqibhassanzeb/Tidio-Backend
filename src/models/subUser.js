@@ -13,6 +13,10 @@ const subUserSchema = new mongoose.Schema(
     email: {
         type: String,
     },
+    disaible: {
+        type: Boolean,
+        default:false
+    },
 },
 { timestamps: true }
 )
