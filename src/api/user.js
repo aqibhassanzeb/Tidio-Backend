@@ -195,3 +195,31 @@ export const subUserCreate= (req, res) => {
       })
 
 }
+
+export const subUserfetch= (req, res) => {
+ if(!req.params._id){
+    return res.status(422).json({message:"id required"})
+ }
+ const id=req.params._id
+ subUser.find({createdby:id})
+  
+      .then((saveUser) => {
+         res.json({saveUser})
+      }).catch((err) => {
+          console.log(err)
+      })
+
+}
+export const subUserDelete= (req, res) => {
+ if(!req.params._id){
+    return res.status(422).json({message:"id required"})
+ }
+ const id=req.params._id
+ subUser.findOneAndDelete({_id:id})
+      .then((saveUser) => {
+         res.json({message:"deleted successfully"})
+      }).catch((err) => {
+          console.log(err)
+      })
+
+}
