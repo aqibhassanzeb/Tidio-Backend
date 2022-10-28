@@ -30,7 +30,8 @@ import newChat from "../../models/subUserchatModal.js";
     .populate("Admin","-password")
  
     if (isChat.length > 0) {
-        res.send(isChat[0]);
+      const FullChat = isChat[0]
+      res.status(200).json({FullChat});
     } else {
         var chatData = {
             subUser:subUserId,
@@ -43,7 +44,7 @@ import newChat from "../../models/subUserchatModal.js";
         const FullChat = await newChat.findOne({ _id: createdChatId }) .populate("subUser")
         .populate("Admin","-password")
         if(newsubuser){
-          res.status(200).json({FullChat,newsubuser});
+          res.status(200).json({FullChat});
           
         }else{
           
