@@ -1,13 +1,28 @@
+import subUser from "../../models/subUser.js";
 import newChat from "../../models/subUserchatModal.js";
 
   
   
   export const accessChat2 = async (req, res) => {
-      const { _id,createdby } = req.body;
+    if(!req.body._id){
+      if(!req.body.email){
+   return res.status(422).json({message:"email is required"})
+      }
+      const {email,createdby}=req.body
+      const user = new subUser({email,createdby})
+    var newsubuser= await user.save()
     
-      var isChat = await newChat.find({
+    } 
+    const { createdby } = req.body;
+
+    if(newsubuser){
+      var subUserId=newsubuser._id
+    }else{
+      var subUserId=req.body._id
+    }
+    var isChat = await newChat.find({
         $and: [
-            { subUser: { $eq: _id } },
+            { subUser: { $eq: subUserId } },
             { Admin: { $eq: createdby }  },
         ],
     })
@@ -18,15 +33,22 @@ import newChat from "../../models/subUserchatModal.js";
         res.send(isChat[0]);
     } else {
         var chatData = {
-            subUser:_id,
+            subUser:subUserId,
             Admin: createdby
         };
-        
-
-      try {
-        const createdChat = await newChat.save(chatData);
-        const FullChat = await Chat.findOne({ _id: createdChat })
-        res.status(200).json(FullChat);
+        const newchatdata = new newChat(chatData)
+        try {
+          const createdChat = await newchatdata.save();
+          var createdChatId=createdChat._id
+        const FullChat = await newChat.findOne({ _id: createdChatId }) .populate("subUser")
+        .populate("Admin","-password")
+        if(newsubuser){
+          res.status(200).json({FullChat,newsubuser});
+          
+        }else{
+          
+          res.status(200).json({FullChat});
+        }
       } catch (error) {
         res.status(400);
         throw new Error(error.message);

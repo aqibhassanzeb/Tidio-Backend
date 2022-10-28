@@ -7,12 +7,19 @@ const subUserSchema = new mongoose.Schema(
     createdby: {
         type: String,
        },
+    embededLink:{
+        type:String,
+       },
     email: {
         type: String,
-    }
+    },
+    disaible: {
+        type: Boolean,
+        default:false
+    },
 },
 { timestamps: true }
 )
-export  const subUser = mongoose.model('subUser', subUserSchema)
+export  const chatBot = mongoose.model('chatBot', subUserSchema)
 
-export default subUser;
+export default chatBot;

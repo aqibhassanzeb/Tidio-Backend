@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import bycrypt from "bcryptjs"
 import crypto from "crypto"
 import nodemailer from "nodemailer"
+import {chatBot} from '../models/chatbot.js';
 
 
 
@@ -177,13 +178,13 @@ export const subUserCreate= (req, res) => {
  if(!name){
     return res.status(422).json({message:"name is required"})
  }
- subUser.find( {$and: [{  name: name }, { createdby:createdby}]})
+ chatBot.find( {$and: [{  name: name }, { createdby:createdby}]})
   
       .then((saveUser) => {
           if (saveUser.length >0) {
               return res.status(422).json({ message: 'already registered' })
           }
-              const user = new subUser(req.body)
+              const user = new chatBot(req.body)
                   user.save()
                       .then(user => {
                           res.json({ message: "created successfully",user})
@@ -203,7 +204,7 @@ export const subUserfetch= (req, res) => {
     return res.status(422).json({message:"id required"})
  }
  const id=req.params._id
- subUser.find({createdby:id})
+ chatBot.find({createdby:id})
   
       .then((saveUser) => {
          res.json({saveUser})
@@ -220,7 +221,7 @@ export const subUserDelete= (req, res) => {
     return res.status(422).json({message:"id required"})
  }
  const id=req.params._id
- subUser.findOneAndDelete({_id:id})
+ chatBot.findOneAndDelete({_id:id})
       .then((saveUser) => {
          res.json({message:"deleted successfully"})
       }).catch((err) => {
