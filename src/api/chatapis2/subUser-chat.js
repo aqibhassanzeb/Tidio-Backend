@@ -18,21 +18,14 @@ import newChat from "../../models/subUserchatModal.js";
     if(newsubuser){
       var subUserId=newsubuser._id
     }else{
-      var subUserId=req.body._id
+      var _id=req.body._id
+      const isChat = await newChat.findOne({ _id: req.body._id }) .populate("subUser") .populate("Admin","name email")
+      if (isChat) {
+        const FullChat = isChat
+      return res.status(200).json({FullChat});
+      }
+      return res.status(400).json({message:"not found"})
     }
-    var isChat = await newChat.find({
-        $and: [
-            { subUser: { $eq: subUserId } },
-            { Admin: { $eq: createdby }  },
-        ],
-    })
-    .populate("subUser")
-    .populate("Admin","-password")
- 
-    if (isChat.length > 0) {
-      const FullChat = isChat[0]
-      res.status(200).json({FullChat});
-    } else {
         var chatData = {
             subUser:subUserId,
             Admin: createdby
@@ -43,36 +36,42 @@ import newChat from "../../models/subUserchatModal.js";
           var createdChatId=createdChat._id
         const FullChat = await newChat.findOne({ _id: createdChatId }) .populate("subUser")
         .populate("Admin","-password")
-        if(newsubuser){
-          res.status(200).json({FullChat});
-          
-        }else{
           
           res.status(200).json({FullChat});
-        }
+        
       } catch (error) {
         res.status(400);
         throw new Error(error.message);
       }
-    }
+    
   };
 
-//   export const fetchChats = async (req, res) => {
-//     try {
-//       Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
-//         .populate("users", "-password")
-//         .populate("groupAdmin", "-password")
-//         .populate("latestMessage")
-//         .sort({ updatedAt: -1 })
-//         .then(async (results) => {
-//           results = await User.populate(results, {
-//             path: "latestMessage.sender",
-//             select: "name imageUrl email",
-//           });
-//           res.status(200).send(results);
-//         });
-//     } catch (error) {
-//       res.status(400);
-//       throw new Error(error.message);
-//     }
-//   };
+  export const fetchChats2 = async (req, res) => {
+  if(!req.query.Admin){
+    return res.status(422).json({error:"admin id is required"})
+  }
+  let filter={}
+  if(req.query.Admin){
+    filter ={Admin:req.query.Admin.split(',')}
+  }
+    try { 
+      newChat.find({
+        $and : [
+          { chatEnable:true},{filter}
+        ]
+      })
+        .populate("subUser")
+        .populate("Admin", "name email imageUrl")
+        .sort({ updatedAt: -1 })
+        .then(async (results) => {
+          // results = await User.populate(results, {
+          //   path: "latestMessage.sender",
+          //   select: "name imageUrl email",
+          // });
+          res.status(200).send(results);
+        });
+    } catch (error) {
+      res.status(400);
+      throw new Error(error.message);
+    }
+  };

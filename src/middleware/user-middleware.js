@@ -7,8 +7,6 @@ export const protect = (req, res, next) => {
     if (!authorization) {
         return res.status(401).json({ error: "you must be logged in" })
         }
-
-
         const token = authorization.replace("Bearer ", "")
     Jwt.verify(token, process.env.JWT_SECRET, (err, payload) => {
         if (err) {

@@ -1,4 +1,5 @@
 import Message2 from '../../models/messagesModal2.js'
+import newChat from '../../models/subUserchatModal.js';
 import User from '../../models/User.js'
 export const sendMessage2 =async (req, res) => {
     const { content, chatId,sender } = req.body;
@@ -6,7 +7,10 @@ export const sendMessage2 =async (req, res) => {
     if (!content || !chatId) {
       return res.sendStatus(400);
     }
-  
+  const checkChat= await newChat.findById(chatId)
+    if(checkChat.chatEnable==false){
+    const updateChat= await newChat.findByIdAndUpdate(chatId,{chatEnable:true})
+       }
     var newMessage = {
       sender,
       content,
@@ -23,7 +27,6 @@ export const sendMessage2 =async (req, res) => {
   };
 
   export const allMessages2 = async (req, res) => {
-    // return
     try {
       const messages = await Message2.find({ chat: req.params.chatId })
         .populate({path:"chat", populate: {path:"Admin",modal:"user",select:"name email imageUrl"}})

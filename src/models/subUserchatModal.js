@@ -8,6 +8,10 @@ const subUserchatModal = mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Message",
     },
+    chatEnable:{
+      type:Boolean,
+      default:false
+    }
   },
   { timestamps: true }
 );

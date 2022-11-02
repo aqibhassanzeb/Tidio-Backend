@@ -1,4 +1,5 @@
 import Chat from "../../models/chatModal.js";
+import newChat from "../../models/subUserchatModal.js";
 import User from "../../models/User.js";
 
 
@@ -68,16 +69,11 @@ export const allUsers = async (req, res) => {
 
   export const fetchChats = async (req, res) => {
     try {
-      Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
-        .populate("users", "-password")
-        .populate("groupAdmin", "-password")
-        .populate("latestMessage")
+      newChat.find({ Admin: req.user._id  })
+        .populate("Admin", "-password")
+        .populate("subUser")
         .sort({ updatedAt: -1 })
-        .then(async (results) => {
-          results = await User.populate(results, {
-            path: "latestMessage.sender",
-            select: "name imageUrl email",
-          });
+        .then((results) => {
           res.status(200).send(results);
         });
     } catch (error) {
