@@ -47,7 +47,7 @@ import newChat from "../../models/subUserchatModal.js";
   };
 
   export const fetchChats2 = async (req, res) => {
-  if(!req.query.Admin){
+  if(req.query.Admin==null){
     return res.status(422).json({error:"admin id is required"})
   }
   let filter={}
