@@ -2,7 +2,7 @@ import Message2 from '../../models/messagesModal2.js'
 import newChat from '../../models/subUserchatModal.js';
 import User from '../../models/User.js'
 export const sendMessage2 =async (req, res) => {
-    const { content, chatId,sender } = req.body;
+    const { content, chatId,sender,senderId } = req.body;
   
     if (!content || !chatId) {
       return res.sendStatus(400);
@@ -15,10 +15,11 @@ export const sendMessage2 =async (req, res) => {
       sender,
       content,
       chat: chatId,
+      senderId
     };
   
     try {
-      var message = await Message2.create(newMessage);
+      var message = await (await Message2.create(newMessage)).populate("chat")
       res.json(message);
     } catch (error) {
       res.status(400);
