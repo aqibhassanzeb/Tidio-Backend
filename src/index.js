@@ -67,9 +67,27 @@ io.on("connection", (socket) => {
     console.log("Connected to socket.io");
     socket.on("setup", (userData) => {
         socket.join(userData._id)
+        socket.emit("me", userData._id)
         socket.emit("connected")
     })
+     
+    // calling portion 
 
+    socket.on("disconnect", () => {
+		socket.broadcast.emit("callEnded")
+	})
+
+	socket.on("callUser", (data) => {
+        console.log("calling.. :")
+		io.to(data.userToCall).emit("callUser", { signal: data.signalData, from: data.from, name: data.name })
+	})
+
+	socket.on("answerCall", (data) => {
+		io.to(data.to).emit("callAccepted", data.signal)
+	})
+
+
+    // chat portion 
 
     socket.on("typing", (room) => {
         socket.in(room).emit("typing")
