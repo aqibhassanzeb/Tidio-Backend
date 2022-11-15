@@ -78,12 +78,15 @@ io.on("connection", (socket) => {
 	})
 
 	socket.on("callUser", (data) => {
-        console.log("calling.. :")
 		io.to(data.userToCall).emit("callUser", { signal: data.signalData, from: data.from, name: data.name })
 	})
 
 	socket.on("answerCall", (data) => {
 		io.to(data.to).emit("callAccepted", data.signal)
+	})
+
+	socket.on("endCall", (data) => {
+		io.to(data).emit("end")
 	})
 
 
@@ -99,7 +102,6 @@ io.on("connection", (socket) => {
 
     socket.on("join chat", (room) => {
         socket.join(room)
-        console.log("room :", room)
     })
 
 
