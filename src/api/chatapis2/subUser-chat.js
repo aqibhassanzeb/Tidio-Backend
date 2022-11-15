@@ -47,7 +47,10 @@ import newChat from "../../models/subUserchatModal.js";
   };
 
   export const fetchChats2 = async (req, res) => {
-  if(req.query.Admin==null){
+    const {Admin}=req.query
+    console.log("admin :",Admin,"req.query :",req.query)
+  if(!Admin || Admin==="null" || Admin==="undefined"){
+    console.log("if admin section ")
     return res.status(422).json({error:"admin id is required"})
   }
   let filter={}
@@ -57,7 +60,7 @@ import newChat from "../../models/subUserchatModal.js";
     try { 
       newChat.find({
         $and : [
-          { chatEnable:true},{filter}
+          { chatEnable:true},{Admin:req.query.Admin}
         ]
       })
         .populate("subUser")
