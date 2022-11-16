@@ -82,11 +82,12 @@ io.on("connection", (socket) => {
 	})
 
 	socket.on("answerCall", (data) => {
-		io.to(data.to).emit("callAccepted", data.signal)
+        // console.log("data :",data,data.to)
+		socket.to(data.to).emit("callAccepted", data.signal)
 	})
 
 	socket.on("endCall", (data) => {
-		io.to(data).emit("end")
+		socket.to(data.to).emit("end")
 	})
 
 
