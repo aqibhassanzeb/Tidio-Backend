@@ -9,6 +9,8 @@ import {userSignup,
     subUserCreate,
     subUserfetch,
     subUserDelete,
+    subUserfetchContact,
+    subUserchatDelete,
     
 } from "../api/user.js"
 import { protect } from "../middleware/user-middleware.js";
@@ -21,7 +23,9 @@ routes.post('/reset-password', forgotPass )
 routes.post('/new-password', newPass )
 routes.post('/newusercreate',protect, subUserCreate )
 routes.get('/subuserfetch/:_id',protect, subUserfetch)
-routes.delete('/subuserdelete/:_id', subUserDelete)
+routes.delete('/subuserdelete/:_id',protect, subUserDelete)
+routes.get('/subusermessagecontact/:_id',protect, subUserfetchContact)
+routes.delete('/subuserdeletechat/:_id',protect, subUserchatDelete)
 
 
 

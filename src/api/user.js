@@ -5,6 +5,7 @@ import bycrypt from "bcryptjs"
 import crypto from "crypto"
 import nodemailer from "nodemailer"
 import {chatBot} from '../models/chatbot.js';
+import newChat from '../models/subUserchatModal.js';
 
 
 
@@ -229,3 +230,39 @@ export const subUserDelete= (req, res) => {
       })
 
 }
+
+// fetch subuser enable contact
+export const subUserfetchContact= (req, res) => {
+    if(!req.params._id){
+       return res.status(422).json({message:"id required"})
+    }
+    const id=req.params._id
+    newChat.find({
+        $and : [
+          { chatEnable:true},{Admin:id}
+        ]
+      })
+        .populate("subUser","email")
+        .sort({ updatedAt: -1 })
+         .then((saveUser) => {
+            res.json({saveUser})
+         }).catch((err) => {
+             console.log(err)
+         })
+   
+   }
+
+// delete chat of subuser
+   export const subUserchatDelete=(req, res) => {
+    if(!req.params._id){
+       return res.status(422).json({message:"id required"})
+    }
+    const id=req.params._id
+    newChat.findOneAndDelete({_id:id})
+         .then((saveUser) => {
+            res.json({message:"deleted successfully"})
+         }).catch((err) => {
+             console.log(err)
+         })
+   
+   }
