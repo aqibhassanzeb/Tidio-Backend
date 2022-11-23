@@ -4,6 +4,8 @@ import cors from 'cors';
 // import helmet from 'helmet';
 // import morgan from 'morgan';
 import bodyParser from 'body-parser';
+import * as path from 'path';
+import {fileURLToPath} from 'url';
 // import Auth from './api-routes/user-route.js';
 
 import './config.js';
@@ -16,6 +18,9 @@ import { Server } from "socket.io"
 
 const app = express();
 dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+// app.use(express.static(path.join(__dirname, "public")))
 //middelwares
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.json());
@@ -35,8 +40,8 @@ app.use(cors({
 //user forgot and reset-password Endpoints
 // app.use('/api/v1/reset-password',passwordreset)
 //All APi's Endponits
+app.use("/public",express.static("public"));
 app.use('/api/v1', userAuth, adminAuth, chatRoutes, messages)
-
 
 app.use('*', (req, res) => {
     return res.status(404).json({
@@ -56,7 +61,7 @@ const nodeServer = app.listen(port, () => {
 const io = new Server(nodeServer, {
     pingTimeout: 60000,
     cors: {
-        origin: process.env.LINK,
+        origin: process.env.LOCAL_LINK,
         // credentials: true,
     },
 });

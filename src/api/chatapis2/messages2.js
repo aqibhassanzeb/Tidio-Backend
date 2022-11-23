@@ -2,9 +2,14 @@ import Message2 from '../../models/messagesModal2.js'
 import newChat from '../../models/subUserchatModal.js';
 import User from '../../models/User.js'
 export const sendMessage2 =async (req, res) => {
+
+// console.log("file find :",req.file)
+// console.log("file find 2 :",req.body)
+
+
     const { content, chatId,sender,senderId } = req.body;
   
-    if (!content || !chatId) {
+    if (!chatId) {
       return res.sendStatus(400);
     }
   const checkChat= await newChat.findById(chatId)
@@ -12,6 +17,7 @@ export const sendMessage2 =async (req, res) => {
     const updateChat= await newChat.findByIdAndUpdate(chatId,{chatEnable:true})
        }
     var newMessage = {
+      myFile:req.file ? req.file.filename : null, 
       sender,
       content,
       chat: chatId,
