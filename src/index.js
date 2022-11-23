@@ -34,14 +34,14 @@ app.use(cors({
 
 // app.use(helmet());
 // app.use(morgan("dev"));
-//Routes
+
 //uset Email Verification Endpoints
 // app.use('/api/v1/activate-account',userRegisterWithEmailVerification)
 //user forgot and reset-password Endpoints
 // app.use('/api/v1/reset-password',passwordreset)
 //All APi's Endponits
-app.use("/public",express.static("public"));
 app.use('/api/v1', userAuth, adminAuth, chatRoutes, messages)
+app.use("/public",express.static("public"));
 
 app.use('*', (req, res) => {
     return res.status(404).json({
