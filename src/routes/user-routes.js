@@ -29,7 +29,7 @@ routes.delete('/subuserdelete/:_id',protect, subUserDelete)
 routes.get('/subusermessagecontact/:_id',protect, subUserfetchContact)
 routes.put('/subuserdeletechat/:_id', subUserchatDelete)
 routes.post('/chatbotsetting',protect, chatbotSetting )
-routes.get('/chatbotsetting/:_id',protect, chatbotSettingfetch)
+routes.get('/chatbotsetting/:_id', chatbotSettingfetch)
 
 
 
