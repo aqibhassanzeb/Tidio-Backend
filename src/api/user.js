@@ -270,9 +270,8 @@ export const subUserchatDelete = (req, res) => {
 //    setting for chatBot
 
 export const chatbotSetting = (req, res) => {
-    let _id = req.user._id
-    console.log("id :", _id)
-    chatBotSet.findOne({ createdBy: _id })
+    const _id = req.body._id
+    chatBotSet.findOne({_id })
         .then((saveUser) => {
             if (!saveUser) {
                 const chatbotset = new chatBotSet(req.body)
@@ -282,12 +281,28 @@ export const chatbotSetting = (req, res) => {
                     })
                 return
             }
-            chatBotSet.findOneAndUpdate({ createdBy: _id }, req.body)
+            chatBotSet.findOneAndUpdate({_id}, req.body)
                 .then(chatbot => {
-                    res.json({ message: "updated successfully", chatbot })
+                    res.json({ message: "updated successfully"})
                 }).catch((err) => {
                     console.log(err)
                 })
+        }).catch((err) => {
+            console.log(err)
+        })
+
+}
+
+// fetch api for chatbot setting 
+export const chatbotSettingfetch = (req, res) => {
+    if (!req.params._id || req.params._id == undefined) {
+        return res.status(422).json({ message: "id required" })
+    }
+    const id = req.params._id
+    chatBotSet.find({ createdby: id })
+
+        .then((setting) => {
+            res.json(setting)
         }).catch((err) => {
             console.log(err)
         })

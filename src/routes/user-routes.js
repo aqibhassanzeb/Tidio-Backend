@@ -12,6 +12,7 @@ import {userSignup,
     subUserfetchContact,
     subUserchatDelete,
     chatbotSetting,
+    chatbotSettingfetch,
     
 } from "../api/user.js"
 import { protect } from "../middleware/user-middleware.js";
@@ -28,6 +29,7 @@ routes.delete('/subuserdelete/:_id',protect, subUserDelete)
 routes.get('/subusermessagecontact/:_id',protect, subUserfetchContact)
 routes.put('/subuserdeletechat/:_id', subUserchatDelete)
 routes.post('/chatbotsetting',protect, chatbotSetting )
+routes.get('/chatbotsetting/:_id',protect, chatbotSettingfetch)
 
 
 
