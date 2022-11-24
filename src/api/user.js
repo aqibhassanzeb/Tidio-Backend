@@ -4,8 +4,9 @@ import jwt from "jsonwebtoken";
 import bycrypt from "bcryptjs"
 import crypto from "crypto"
 import nodemailer from "nodemailer"
-import {chatBot} from '../models/chatbot.js';
+import { chatBot } from '../models/chatbot.js';
 import newChat from '../models/subUserchatModal.js';
+import chatBotSet from '../models/chatbotSetting.js';
 
 
 
@@ -13,103 +14,103 @@ import newChat from '../models/subUserchatModal.js';
 
 
 
-const transporter = nodemailer.createTransport({service:"gmail",auth:{user:"workspatron@gmail.com",pass:"mhoumpxfstzptawc"},from:"workspatron@gmail.com"})
+const transporter = nodemailer.createTransport({ service: "gmail", auth: { user: "workspatron@gmail.com", pass: "mhoumpxfstzptawc" }, from: "workspatron@gmail.com" })
 transporter.verify((err, succ) => {
     if (err) {
-      console.log(err);
+        console.log(err);
     } else if (succ) {
-      console.log("Mail Service Connected");
+        console.log("Mail Service Connected");
     }
-  });
+});
 
 
-export const userSignup= (req, res) => {
-    let status="user"
- 
- const {email,password}= req.body
- User.findOne({ email: email })
-  
-      .then((saveUser) => {
-          if (saveUser) {
-              return res.status(422).json({ message: 'already registered' })
-          }
-              bycrypt.hash(password, 12)
-              .then((hashedpassword) => {
-                const  Data={...req.body,password:hashedpassword,status}
-                  const user = new User(
-                      Data
-                  )
-                  user.save()
-                      .then(user => {
-                          const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET)
-                          const userDetail ={...user,...user.password=undefined}
-                          res.json({ message: "register successfully",token,user:userDetail._doc })
-                      }).catch((err) => {
-                          console.log(err)
-                      })
-              })
-      }).catch((err) => {
-          console.log(err)
-      })
+export const userSignup = (req, res) => {
+    let status = "user"
 
-}
+    const { email, password } = req.body
+    User.findOne({ email: email })
 
-export const userLogin = async (req, res) => {
-    const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(422).json({ error: "please add email or password" })
-}
-const user = await User.findOne({ email });
-if (!user) {
-    return res.status(422).send({ error: "email not register" });
-  }
-  bycrypt.compare(password, user.password)
-  .then(doMatch => {
-      if (doMatch) {
-          const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET)
-          const userDetail ={...user,...user.password=undefined}
-          res.json({ message: "Successfull Login", token, user:userDetail._doc})
-      } else {
-          return res.status(422).json({ error: 'invalid password' })
-      }
-  })
-}
-
-
-  export const userSocialLogin= (req, res) => {
-      let status="user"
-   subUser.findOne({ email: email })
-    
         .then((saveUser) => {
             if (saveUser) {
-                const token = jwt.sign({ _id: saveUser._id }, process.env.JWT_SECRET)
-                const userDetail ={...saveUser}
-             return   res.json({ message: "login successfully",token,user:userDetail._doc })
+                return res.status(422).json({ message: 'already registered' })
             }
-                
-                  const  Data={...req.body,status}
+            bycrypt.hash(password, 12)
+                .then((hashedpassword) => {
+                    const Data = { ...req.body, password: hashedpassword, status }
                     const user = new User(
                         Data
                     )
                     user.save()
                         .then(user => {
                             const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET)
-                            const userDetail ={...user}
-                            res.json({ message: "register successfully",token,user:userDetail._doc })
+                            const userDetail = { ...user, ...user.password = undefined }
+                            res.json({ message: "register successfully", token, user: userDetail._doc })
                         }).catch((err) => {
                             console.log(err)
                         })
-            
+                })
         }).catch((err) => {
             console.log(err)
         })
-  
-  }
+
+}
+
+export const userLogin = async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res.status(422).json({ error: "please add email or password" })
+    }
+    const user = await User.findOne({ email });
+    if (!user) {
+        return res.status(422).send({ error: "email not register" });
+    }
+    bycrypt.compare(password, user.password)
+        .then(doMatch => {
+            if (doMatch) {
+                const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET)
+                const userDetail = { ...user, ...user.password = undefined }
+                res.json({ message: "Successfull Login", token, user: userDetail._doc })
+            } else {
+                return res.status(422).json({ error: 'invalid password' })
+            }
+        })
+}
+
+
+export const userSocialLogin = (req, res) => {
+    let status = "user"
+    subUser.findOne({ email: email })
+
+        .then((saveUser) => {
+            if (saveUser) {
+                const token = jwt.sign({ _id: saveUser._id }, process.env.JWT_SECRET)
+                const userDetail = { ...saveUser }
+                return res.json({ message: "login successfully", token, user: userDetail._doc })
+            }
+
+            const Data = { ...req.body, status }
+            const user = new User(
+                Data
+            )
+            user.save()
+                .then(user => {
+                    const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET)
+                    const userDetail = { ...user }
+                    res.json({ message: "register successfully", token, user: userDetail._doc })
+                }).catch((err) => {
+                    console.log(err)
+                })
+
+        }).catch((err) => {
+            console.log(err)
+        })
+
+}
 
 
 //   forgot password 
 
-export const forgotPass= (req, res) => {
+export const forgotPass = (req, res) => {
     crypto.randomBytes(32, (err, buffer) => {
         if (err) {
             console.log(err)
@@ -122,8 +123,7 @@ export const forgotPass= (req, res) => {
                 }
                 user.resetToken = token
                 user.expireToken = Date.now() + 3600000
-                user.save().then((result) => 
-                {
+                user.save().then((result) => {
                     transporter.sendMail({
                         to: user.email,
                         from: "no-reply-www.brianspk.com",
@@ -141,128 +141,155 @@ export const forgotPass= (req, res) => {
     })
 }
 
-        // new password 
+// new password 
 
-export const newPass=(req, res) => {
+export const newPass = (req, res) => {
     const d = new Date();
-let time = d.getTime();
-    console.log("req :",req.body,time,"full date :",d,"time :",d.toLocaleTimeString())
-            const newPassword = req.body.password
-            const sentToken = req.body.token
-            User.findOne({ resetToken: sentToken, expireToken: { $gt: Date.now() } })
-        
+    let time = d.getTime();
+    console.log("req :", req.body, time, "full date :", d, "time :", d.toLocaleTimeString())
+    const newPassword = req.body.password
+    const sentToken = req.body.token
+    User.findOne({ resetToken: sentToken, expireToken: { $gt: Date.now() } })
+
+        .then(user => {
+            console.log("user :", user)
+            if (!user) {
+                return res.status(422).json({ error: "Try again session expired" })
+            }
+            bycrypt.hash(newPassword, 12).then(hashedpassword => {
+                user.password = hashedpassword
+                user.resetToken = undefined
+                user.expireToken = undefined
+                user.save().then((saveduser) => {
+                    res.json({ message: "password updated success" })
+                })
+            })
+        }).catch(err => {
+            console.log(err)
+        })
+}
+
+
+
+// sub user portion 
+
+
+export const subUserCreate = (req, res) => {
+    const { name, createdby } = req.body
+    if (!name) {
+        return res.status(422).json({ message: "name is required" })
+    }
+    chatBot.find({ $and: [{ name: name }, { createdby: createdby }] })
+
+        .then((saveUser) => {
+            if (saveUser.length > 0) {
+                return res.status(422).json({ message: 'already registered' })
+            }
+            const user = new chatBot(req.body)
+            user.save()
                 .then(user => {
-                    console.log("user :",user)
-                    if (!user) {
-                        return res.status(422).json({ error: "Try again session expired" })
-                    }
-                    bycrypt.hash(newPassword, 12).then(hashedpassword => {
-                        user.password = hashedpassword
-                        user.resetToken = undefined
-                        user.expireToken = undefined
-                        user.save().then((saveduser) => {
-                            res.json({ message: "password updated success" })
-                        })
-                    })
-                }).catch(err => {
+                    res.json({ message: "created successfully", user })
+                }).catch((err) => {
                     console.log(err)
                 })
-        }
-
-    
-     
-        // sub user portion 
-
-    
-export const subUserCreate= (req, res) => {
- const {name,createdby}= req.body
- if(!name){
-    return res.status(422).json({message:"name is required"})
- }
- chatBot.find( {$and: [{  name: name }, { createdby:createdby}]})
-  
-      .then((saveUser) => {
-          if (saveUser.length >0) {
-              return res.status(422).json({ message: 'already registered' })
-          }
-              const user = new chatBot(req.body)
-                  user.save()
-                      .then(user => {
-                          res.json({ message: "created successfully",user})
-                      }).catch((err) => {
-                          console.log(err)
-                      })
-      }).catch((err) => {
-          console.log(err)
-      })
+        }).catch((err) => {
+            console.log(err)
+        })
 
 }
 
 // fetch subuser api
- 
-export const subUserfetch= (req, res) => {
- if(!req.params._id){
-    return res.status(422).json({message:"id required"})
- }
- const id=req.params._id
- chatBot.find({createdby:id})
-  
-      .then((saveUser) => {
-         res.json({saveUser})
-      }).catch((err) => {
-          console.log(err)
-      })
+
+export const subUserfetch = (req, res) => {
+    if (!req.params._id) {
+        return res.status(422).json({ message: "id required" })
+    }
+    const id = req.params._id
+    chatBot.find({ createdby: id })
+
+        .then((saveUser) => {
+            res.json({ saveUser })
+        }).catch((err) => {
+            console.log(err)
+        })
 
 }
 
 // delete subuser api
 
-export const subUserDelete= (req, res) => {
- if(!req.params._id){
-    return res.status(422).json({message:"id required"})
- }
- const id=req.params._id
- chatBot.findOneAndDelete({_id:id})
-      .then((saveUser) => {
-         res.json({message:"deleted successfully"})
-      }).catch((err) => {
-          console.log(err)
-      })
+export const subUserDelete = (req, res) => {
+    if (!req.params._id) {
+        return res.status(422).json({ message: "id required" })
+    }
+    const id = req.params._id
+    chatBot.findOneAndDelete({ _id: id })
+        .then((saveUser) => {
+            res.json({ message: "deleted successfully" })
+        }).catch((err) => {
+            console.log(err)
+        })
 
 }
 
 // fetch subuser enable contact
-export const subUserfetchContact= (req, res) => {
-    if(!req.params._id){
-       return res.status(422).json({message:"id required"})
+export const subUserfetchContact = (req, res) => {
+    if (!req.params._id) {
+        return res.status(422).json({ message: "id required" })
     }
-    const id=req.params._id
+    const id = req.params._id
     newChat.find({
-        $and : [
-          { chatEnable:true},{Admin:id}
+        $and: [
+            { chatEnable: true }, { Admin: id }
         ]
-      })
-        .populate("subUser","email")
+    })
+        .populate("subUser", "email")
         .sort({ updatedAt: -1 })
-         .then((saveUser) => {
-            res.json({saveUser})
-         }).catch((err) => {
-             console.log(err)
-         })
-   
-   }
+        .then((saveUser) => {
+            res.json({ saveUser })
+        }).catch((err) => {
+            console.log(err)
+        })
+
+}
 
 // delete chat of subuser
-   export const subUserchatDelete=(req, res) => {
-    if(!req.params._id){
-       return res.status(422).json({message:"id required"})
+export const subUserchatDelete = (req, res) => {
+    if (!req.params._id) {
+        return res.status(422).json({ message: "id required" })
     }
-    const id=req.params._id
-    newChat.findOneAndDelete({_id:id})
-         .then((saveUser) => {
-            res.json({message:"deleted successfully"})
-         }).catch((err) => {
-             console.log(err)
-         })
-   
-   }
+    const id = req.params._id
+    newChat.findOneAndUpdate({ _id: id }, { chatEnable: false })
+        .then((saveUser) => {
+            res.json({ message: "deleted successfully" })
+        }).catch((err) => {
+            console.log(err)
+        })
+
+}
+
+//    setting for chatBot
+
+export const chatbotSetting = (req, res) => {
+    let _id = req.user._id
+    console.log("id :", _id)
+    chatBotSet.findOne({ createdBy: _id })
+        .then((saveUser) => {
+            if (!saveUser) {
+                const chatbotset = new chatBotSet(req.body)
+                chatbotset.save()
+                    .then(chatbot => {
+                        res.json({ message: "created successfully", chatbot })
+                    })
+                return
+            }
+            chatBotSet.findOneAndUpdate({ createdBy: _id }, req.body)
+                .then(chatbot => {
+                    res.json({ message: "updated successfully", chatbot })
+                }).catch((err) => {
+                    console.log(err)
+                })
+        }).catch((err) => {
+            console.log(err)
+        })
+
+}
