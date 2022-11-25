@@ -61,7 +61,7 @@ const nodeServer = app.listen(port, () => {
 const io = new Server(nodeServer, {
     pingTimeout: 60000,
     cors: {
-        origin: process.env.LOCAL_LINK,
+        origin: process.env.LINK,
         // credentials: true,
     },
 });
