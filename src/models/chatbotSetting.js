@@ -8,7 +8,6 @@ const chatbotSetting = mongoose.Schema(
     },
     enter_phone:{
       type:String,
-      
     },
     gdpr:{
       type:String,
@@ -22,6 +21,16 @@ const chatbotSetting = mongoose.Schema(
     user_message:{
       type:String,
     },
+    offlineMessage:{
+      type:String,
+    },
+    devices:{
+      type:String,
+    },
+    timeonline:{
+      type:[],
+    },
+
   },
   { timestamps: true }
 );
