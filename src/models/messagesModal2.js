@@ -6,6 +6,10 @@ const messageSchema = mongoose.Schema(
     content: { type: String, trim: true },
     senderId:{type:String},
     chat: { type: mongoose.Schema.Types.ObjectId, ref: "newChat" },
+    offlineMsg:{
+      type:Boolean,
+      default:false
+    },
     readBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
     myFile:{
       type:String,

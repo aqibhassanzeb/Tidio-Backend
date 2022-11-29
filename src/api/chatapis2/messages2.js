@@ -7,7 +7,7 @@ export const sendMessage2 =async (req, res) => {
 // console.log("file find 2 :",req.body)
 
 
-    const { content, chatId,sender,senderId } = req.body;
+    const { content, chatId,sender,senderId,offlineMsg } = req.body;
   
     if (!chatId) {
       return res.sendStatus(400);
@@ -18,6 +18,7 @@ export const sendMessage2 =async (req, res) => {
        }
     var newMessage = {
       myFile:req.file ? req.file.filename : null, 
+      offlineMsg,
       sender,
       content,
       chat: chatId,
