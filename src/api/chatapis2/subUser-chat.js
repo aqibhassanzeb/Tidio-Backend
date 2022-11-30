@@ -8,8 +8,8 @@ import newChat from "../../models/subUserchatModal.js";
       if(!req.body.email){
    return res.status(422).json({message:"email is required"})
       }
-      const {email,createdby}=req.body
-      const user = new subUser({email,createdby})
+      const {email,createdby,name,phoneNo}=req.body
+      const user = new subUser({email,createdby,name,phoneNo})
     var newsubuser= await user.save()
     
     } 
@@ -19,7 +19,7 @@ import newChat from "../../models/subUserchatModal.js";
       var subUserId=newsubuser._id
     }else{
       var _id=req.body._id
-      const isChat = await newChat.findOne({ _id: req.body._id }) .populate("subUser") .populate("Admin","name email")
+      const isChat = await newChat.findOne({ _id: req.body._id }) .populate("subUser") .populate("Admin","name email phoneNo")
       if (isChat) {
         const FullChat = isChat
       return res.status(200).json({FullChat});

@@ -9,6 +9,9 @@ const subUserSchema = new mongoose.Schema(
        },
     email: {
         type: String,
+    },
+    phoneNo: {
+        type: String,
     }
 },
 { timestamps: true }
