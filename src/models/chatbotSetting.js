@@ -3,6 +3,9 @@ import mongoose from "mongoose";
 const chatbotSetting = mongoose.Schema(
   {
     createdBy: { type: mongoose.Schema.Types.ObjectId,ref:"user" },
+    enter_name: {
+      type:String,
+    },
     enter_email: {
       type:String,
     },

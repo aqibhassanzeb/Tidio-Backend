@@ -6,7 +6,6 @@ export const sendMessage2 =async (req, res) => {
 // console.log("file find :",req.file)
 // console.log("file find 2 :",req.body)
 
-
     const { content, chatId,sender,senderId,offlineMsg } = req.body;
   
     if (!chatId) {
