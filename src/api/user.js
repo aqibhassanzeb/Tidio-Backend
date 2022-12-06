@@ -24,6 +24,8 @@ transporter.verify((err, succ) => {
 });
 
 
+// signup without valid email 
+
 export const userSignup = (req, res) => {
     let status = "user"
 
@@ -107,6 +109,74 @@ export const userSocialLogin = (req, res) => {
 
 }
 
+// valid email register 
+export const ValidEmailRegister = async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res.status(422).json({ error: "please add email or password" })
+    }
+    try {
+        const user = await User.findOne({ email })
+        if (user) {
+            return res.status(400).json({ message: "User with this email already exists." })
+        }
+        const token = jwt.sign(req.body, process.env.JWT_SECRET, { expiresIn: '30min' })
+        const link = `${process.env.LINK}/token/${token}`;
+        transporter.sendMail({
+            to: email,
+            from: "no-reply-www.brianspk.com",
+            subject: "Verify Email",
+            html: `
+            <h1>Tidio-Chat</h1>
+        <p>You requested for Verify Email</p>
+        <h5>click on link <a href="${link}">signup</a> to Verify Email</h5>
+        `
+        })
+
+        res.status(200).json({ message: "Account Verification Link Send To Ur Account" })
+
+    } catch {
+        res.send("An error occured");
+        console.log(error);
+    }
+}
+
+
+
+export const tokenSignUp = (req, res) => {
+    const { token } = req.params
+    //    return console.log("token:",  req.params)
+    let status = "user"
+    let secret = process.env.JWT_SECRET
+    if (token) {
+        jwt.verify(token, secret, async function (err, decodedToken) {
+            if (err) {
+                return res.status(400).json({ message: "token is invalid or expired" })
+            }
+            const { email, password } = decodedToken
+
+            const userRegister = await User.findOne({ email });
+            if (userRegister) {
+                return res.send({ message: "this user is already registered" })
+            }
+            bycrypt.hash(password, 12)
+                .then((hashedpassword) => {
+                    const Data = { ...decodedToken, password: hashedpassword, status }
+                    const userData = new User(
+                        Data
+                    )
+                    userData.save()
+                        .then(user => {
+                            const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET)
+                            const userDetail = { ...user, ...user.password = undefined }
+                            res.json({ message: "register successfully", token, user: userDetail._doc })
+                        }).catch((err) => {
+                            console.log(err)
+                        })
+                })
+        })
+    }
+}
 
 //   forgot password 
 
@@ -271,7 +341,7 @@ export const subUserchatDelete = (req, res) => {
 
 export const chatbotSetting = (req, res) => {
     const _id = req.body._id
-    chatBotSet.findOne({_id })
+    chatBotSet.findOne({ _id })
         .then((saveUser) => {
             if (!saveUser) {
                 const chatbotset = new chatBotSet(req.body)
@@ -281,9 +351,9 @@ export const chatbotSetting = (req, res) => {
                     })
                 return
             }
-            chatBotSet.findOneAndUpdate({_id}, req.body)
+            chatBotSet.findOneAndUpdate({ _id }, req.body)
                 .then(chatbot => {
-                    res.json({ message: "updated successfully"})
+                    res.json({ message: "updated successfully" })
                 }).catch((err) => {
                     console.log(err)
                 })

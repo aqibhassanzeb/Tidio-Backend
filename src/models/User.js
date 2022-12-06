@@ -4,8 +4,6 @@ const Schema = mongoose.Schema
 const UserSchema = new Schema({
     status: {
         type: String,
-        required: true,
-        enum:'user'
         },
     surName:{
             type:String,
@@ -55,7 +53,6 @@ const UserSchema = new Schema({
     },
     imageUrl:{
         type: String,
-      required: true,
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },

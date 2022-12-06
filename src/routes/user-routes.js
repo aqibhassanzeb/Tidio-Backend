@@ -13,6 +13,8 @@ import {userSignup,
     subUserchatDelete,
     chatbotSetting,
     chatbotSettingfetch,
+    ValidEmailRegister,
+    tokenSignUp,
     
 } from "../api/user.js"
 import { protect } from "../middleware/user-middleware.js";
@@ -20,6 +22,8 @@ import { protect } from "../middleware/user-middleware.js";
 routes.post('/user', userSignup )
 
 routes.post('/userlogin', userLogin )
+routes.post('/userloginvalidemail', ValidEmailRegister )
+routes.post('/userlogintoken/:token', tokenSignUp )
 routes.post('/socailLogin', userSocialLogin )
 routes.post('/reset-password', forgotPass )
 routes.post('/new-password', newPass )
