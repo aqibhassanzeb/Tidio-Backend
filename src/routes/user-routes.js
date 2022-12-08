@@ -17,6 +17,7 @@ import {
     ValidEmailRegister,
     tokenSignUp,
     userUpdate,
+    changePass,
 
 } from "../api/user.js"
 import { protect } from "../middleware/user-middleware.js";
@@ -26,6 +27,7 @@ routes.post('/user', userSignup)
 
 routes.post('/userlogin', userLogin)
 routes.put('/userUpdate/:_id',upload.single("myFile"), userUpdate)
+routes.put('/userpassupdate', changePass)
 routes.post('/userloginvalidemail', ValidEmailRegister)
 routes.post('/userlogintoken/:token', tokenSignUp)
 routes.post('/socailLogin', userSocialLogin)

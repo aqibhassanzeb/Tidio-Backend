@@ -216,7 +216,6 @@ export const forgotPass = (req, res) => {
 export const newPass = (req, res) => {
     const d = new Date();
     let time = d.getTime();
-    console.log("req :", req.body, time, "full date :", d, "time :", d.toLocaleTimeString())
     const newPassword = req.body.password
     const sentToken = req.body.token
     User.findOne({ resetToken: sentToken, expireToken: { $gt: Date.now() } })
@@ -239,32 +238,62 @@ export const newPass = (req, res) => {
         })
 }
 
-// user update 
+// password change 
 
-export const userUpdate = (req, res) => { 
-    if(!req.params._id){
-        return res.status(440).json("id is required")
+export const changePass = async (req, res) => {
+
+    const { oldPass, newPass, _id } = req.body
+    if (!oldPass || !newPass || !_id) {
+        return res.status(440).json({ error: "field is required" })
     }
-    const {name,imageUrl,region,language}=req.body
-    let payload={
-        name,
-        region,
-        language,
-        imageUrl: req.file ? req.file.filename : undefined,
+    let user = await User.findById({ _id })
+    if (!user) {
+        return res.status(422).send({ error: "user not found" });
     }
-    User.findByIdAndUpdate(req.params,payload)
-        .then(user => {
-            User.findById(req.params).then(resp=>{
-                const userDetail = { ...resp, ...resp.password = undefined }
-             res.json({ message: "update successfully", user: userDetail._doc })
-            })
-         }).catch(err => {
+    bycrypt.compare(oldPass, user.password)
+        .then(doMatch => {
+            if (doMatch) {
+                bycrypt.hash(newPass, 12)
+                    .then((hashedpassword) => {
+                        User.findByIdAndUpdate({ _id }, { password: hashedpassword }).then(result => {
+                            res.json({ message: "Successfull updated password" })
+                        })
+                    })
+            } else {
+                return res.status(422).json({ error: 'current password not match' })
+            }
+        }).catch(err => {
             console.log(err)
         })
 }
 
 
-                                // sub user portion 
+// user update 
+
+export const userUpdate = (req, res) => {
+    if (!req.params._id) {
+        return res.status(440).json("id is required")
+    }
+    const { name, imageUrl, region, language } = req.body
+    let payload = {
+        name,
+        region,
+        language,
+        imageUrl: req.file ? req.file.filename : undefined,
+    }
+    User.findByIdAndUpdate(req.params, payload)
+        .then(user => {
+            User.findById(req.params).then(resp => {
+                const userDetail = { ...resp, ...resp.password = undefined }
+                res.json({ message: "update successfully", user: userDetail._doc })
+            })
+        }).catch(err => {
+            console.log(err)
+        })
+}
+
+
+// sub user portion 
 
 
 export const subUserCreate = (req, res) => {
