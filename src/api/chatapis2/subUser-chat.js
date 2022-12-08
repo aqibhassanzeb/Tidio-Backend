@@ -1,7 +1,7 @@
 import subUser from "../../models/subUser.js";
 import newChat from "../../models/subUserchatModal.js";
 
-  
+  // creating chat between user and customer 
   
   export const accessChat2 = async (req, res) => {
     if(!req.body._id){
@@ -46,6 +46,8 @@ import newChat from "../../models/subUserchatModal.js";
     
   };
 
+  // show chat 
+
   export const fetchChats2 = async (req, res) => {
     const {Admin}=req.query
   if(!Admin || Admin==="null" || Admin==="undefined"){
@@ -61,15 +63,10 @@ import newChat from "../../models/subUserchatModal.js";
         $and : [
           { chatEnable:true},{Admin:req.query.Admin}
         ]
-      })
-        .populate("subUser")
+      }).populate("subUser")
         .populate("Admin", "name email imageUrl")
         .sort({ updatedAt: -1 })
         .then(async (results) => {
-          // results = await User.populate(results, {
-          //   path: "latestMessage.sender",
-          //   select: "name imageUrl email",
-          // });
           res.status(200).send(results);
         });
     } catch (error) {

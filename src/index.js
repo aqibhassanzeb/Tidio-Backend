@@ -1,12 +1,10 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
-// import helmet from 'helmet';
-// import morgan from 'morgan';
+
 import bodyParser from 'body-parser';
 import * as path from 'path';
-import {fileURLToPath} from 'url';
-// import Auth from './api-routes/user-route.js';
+import { fileURLToPath } from 'url';
 
 import './config.js';
 import adminAuth from "./routes/admin-routes.js";
@@ -21,6 +19,7 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 // app.use(express.static(path.join(__dirname, "public")))
+
 //middelwares
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.json());
@@ -32,16 +31,10 @@ app.use(cors({
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
 }));
 
-// app.use(helmet());
-// app.use(morgan("dev"));
 
-//uset Email Verification Endpoints
-// app.use('/api/v1/activate-account',userRegisterWithEmailVerification)
-//user forgot and reset-password Endpoints
-// app.use('/api/v1/reset-password',passwordreset)
 //All APi's Endponits
 app.use('/api/v1', userAuth, adminAuth, chatRoutes, messages)
-app.use("/public",express.static("public"));
+app.use("/public", express.static("public"));
 
 app.use('*', (req, res) => {
     return res.status(404).json({
@@ -55,7 +48,6 @@ const nodeServer = app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
 });
 
-// console.log("sdfskjdflasjlk",process.env.LINK);
 
 // socket.io portion 
 const io = new Server(nodeServer, {
@@ -75,25 +67,24 @@ io.on("connection", (socket) => {
         socket.emit("me", userData._id)
         socket.emit("connected")
     })
-     
+
     // calling portion 
 
     socket.on("disconnect", () => {
-		socket.broadcast.emit("callEnded")
-	})
+        socket.broadcast.emit("callEnded")
+    })
 
-	socket.on("callUser", (data) => {
-		io.to(data.userToCall).emit("callUser", { signal: data.signalData, from: data.from, name: data.name })
-	})
+    socket.on("callUser", (data) => {
+        io.to(data.userToCall).emit("callUser", { signal: data.signalData, from: data.from, name: data.name })
+    })
 
-	socket.on("answerCall", (data) => {
-        // console.log("data :",data,data.to)
-		socket.to(data.to).emit("callAccepted", data.signal)
-	})
+    socket.on("answerCall", (data) => {
+        socket.to(data.to).emit("callAccepted", data.signal)
+    })
 
-	socket.on("endCall", (data) => {
-		socket.to(data.to).emit("end")
-	})
+    socket.on("endCall", (data) => {
+        socket.to(data.to).emit("end")
+    })
 
 
     // chat portion 
@@ -115,10 +106,10 @@ io.on("connection", (socket) => {
         var chat = newMessageRecieved.chat;
         if (!chat) return console.log("chat.users not defined");
 
-        if (chat.Admin == newMessageRecieved.senderId){
+        if (chat.Admin == newMessageRecieved.senderId) {
             socket.in(chat.subUser).emit("messagerecieved", newMessageRecieved);
         }
-        if (chat.subUser == newMessageRecieved.senderId){
+        if (chat.subUser == newMessageRecieved.senderId) {
             socket.in(chat.Admin).emit("messagerecieved", newMessageRecieved);
         }
     });

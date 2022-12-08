@@ -9,10 +9,7 @@ import newChat from '../models/subUserchatModal.js';
 import chatBotSet from '../models/chatbotSetting.js';
 
 
-
-
-
-
+// email sending method 
 
 const transporter = nodemailer.createTransport({ service: "gmail", auth: { user: "workspatron@gmail.com", pass: "mhoumpxfstzptawc" }, from: "workspatron@gmail.com" })
 transporter.verify((err, succ) => {
@@ -57,6 +54,8 @@ export const userSignup = (req, res) => {
 
 }
 
+// user login
+
 export const userLogin = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -78,6 +77,7 @@ export const userLogin = async (req, res) => {
         })
 }
 
+// social login
 
 export const userSocialLogin = (req, res) => {
     let status = "user"
@@ -110,6 +110,7 @@ export const userSocialLogin = (req, res) => {
 }
 
 // valid email register 
+
 export const ValidEmailRegister = async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -141,11 +142,10 @@ export const ValidEmailRegister = async (req, res) => {
     }
 }
 
-
+// token verification 
 
 export const tokenSignUp = (req, res) => {
     const { token } = req.params
-    //    return console.log("token:",  req.params)
     let status = "user"
     let secret = process.env.JWT_SECRET
     if (token) {
@@ -239,9 +239,32 @@ export const newPass = (req, res) => {
         })
 }
 
+// user update 
+
+export const userUpdate = (req, res) => { 
+    if(!req.params._id){
+        return res.status(440).json("id is required")
+    }
+    const {name,imageUrl,region,language}=req.body
+    let payload={
+        name,
+        region,
+        language,
+        imageUrl: req.file ? req.file.filename : undefined,
+    }
+    User.findByIdAndUpdate(req.params,payload)
+        .then(user => {
+            User.findById(req.params).then(resp=>{
+                const userDetail = { ...resp, ...resp.password = undefined }
+             res.json({ message: "update successfully", user: userDetail._doc })
+            })
+         }).catch(err => {
+            console.log(err)
+        })
+}
 
 
-// sub user portion 
+                                // sub user portion 
 
 
 export const subUserCreate = (req, res) => {

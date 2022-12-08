@@ -26,8 +26,12 @@ const UserSchema = new Schema({
     },
     language:{
         type:String,
+        default:"english"
     },
     pic:{
+        type:String
+    },
+    region:{
         type:String
     },
     mainfocus:{
@@ -53,8 +57,7 @@ const UserSchema = new Schema({
     },
     imageUrl:{
         type: String,
-      default:
-        "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
+    
     },
     socailLoginUserId:{
         type:String

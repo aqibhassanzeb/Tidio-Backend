@@ -1,13 +1,14 @@
-import express  from "express";
-const routes=express.Router();
+import express from "express";
+const routes = express.Router();
 
-import {adminSignup,
+import {
+    adminSignup,
     adminLogin,
 } from "../api/admin.js"
 
-routes.post('/adminsignup', adminSignup )
+routes.post('/adminsignup', adminSignup)
 
-routes.post('/adminlogin', adminLogin )
+routes.post('/adminlogin', adminLogin)
 
 
 
