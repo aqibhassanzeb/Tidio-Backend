@@ -18,6 +18,8 @@ import {
     tokenSignUp,
     userUpdate,
     changePass,
+    addProject,
+    projectShow,
 
 } from "../api/user.js"
 import { protect } from "../middleware/user-middleware.js";
@@ -40,6 +42,9 @@ routes.get('/subusermessagecontact/:_id', protect, subUserfetchContact)
 routes.put('/subuserdeletechat/:_id', subUserchatDelete)
 routes.post('/chatbotsetting', protect, chatbotSetting)
 routes.get('/chatbotsetting/:_id', chatbotSettingfetch)
+
+routes.post('/addproject',protect, addProject)
+routes.get('/projectshow',protect, projectShow)
 
 
 

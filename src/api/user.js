@@ -7,6 +7,7 @@ import nodemailer from "nodemailer"
 import { chatBot } from '../models/chatbot.js';
 import newChat from '../models/subUserchatModal.js';
 import chatBotSet from '../models/chatbotSetting.js';
+import { Projects } from '../models/Projects.js';
 
 
 // email sending method 
@@ -425,6 +426,46 @@ export const chatbotSettingfetch = (req, res) => {
 
         .then((setting) => {
             res.json(setting)
+        }).catch((err) => {
+            console.log(err)
+        })
+
+}
+
+// Add projects portion 
+
+
+export const addProject = (req, res) => {
+    const { name, createdBy } = req.body
+    if (!name || !createdBy) {
+        return res.status(422).json({ message: "feild is required" })
+    }
+    Projects.find({ $and: [{ name: name }, { createdBy: createdBy }] })
+        .then((saveUser) => {
+            if (saveUser.length > 0) {
+                return res.status(422).json({ message: 'already registered' })
+            }
+            const project = new Projects(req.body)
+            project.save()
+                .then(proj => {
+                    res.json({ message: "created successfully", proj })
+                }).catch((err) => {
+                    console.log(err)
+                })
+        }).catch((err) => {
+            console.log(err)
+        })
+
+}
+
+// fetch projects 
+
+export const projectShow = (req, res) => {
+    const id = req.user._id
+    Projects.find({ createdBy: id })
+
+        .then((projects) => {
+            res.json(projects)
         }).catch((err) => {
             console.log(err)
         })
